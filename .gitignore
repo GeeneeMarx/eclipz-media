@@ -1,0 +1,14 @@
+@'
+/node_modules
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+/.vscode
+/.idea
+/.phpunit.result.cache
+/.env
+/.env.*
+!/.env.example
+'@ | Set-Content .gitignore

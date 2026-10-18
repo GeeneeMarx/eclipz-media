@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Fonts (Bebas Neue for display, Archivo for body and UI) are loaded from the page
+   head in the public layout, rather than being imported from CSS. */
+
+:root {
+    --color-white: #FFFFFF;
+    --color-electric-blue: #007BFF;
+    --color-jet: #0A0A0A;
+    --color-warm-gold: #D4A017;
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+body {
+    @apply font-body text-jet bg-white;
+}
+
+h1, h2, h3 {
+    @apply font-display tracking-wide;
+}
+
+.text-accent {
+    color: var(--color-electric-blue);
+}
+
+.text-brand-gold {
+    color: var(--color-warm-gold);
+}
+
+:focus-visible {
+    outline: 2px solid var(--color-electric-blue);
+    outline-offset: 2px;
+}
+
+/* Text contrast. The faintest text opacities used across the site fall below the
+   WCAG AA ratio (4.5:1) for small text. This raises them to about 6:1 on white and
+   about 7:1 on jet black, without touching any template. */
+.text-jet\/30,
+.text-jet\/40,
+.text-jet\/50 {
+    color: rgb(10 10 10 / 0.62);
+}
+
+.text-white\/30,
+.text-white\/40 {
+    color: rgb(255 255 255 / 0.6);
+}
+
+/* Scroll reveal. Content is hidden only while JavaScript is running (the layout adds
+   the "js" class), so the page stays fully visible without it. */
+.js [data-reveal] {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.js [data-reveal].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hero-media {
+    background-size: cover;
+    background-position: center right;
+}
+
+@media (max-width: 767px) {
+    .hero-media {
+        background-position: 75% center;
+    }
+}
+
+/* Client logos: full color always (never grayscale). display_scale sets a
+   per-client base size adjustment (default 1 = no change); hover adds a
+   small, restrained bump on top of that base - never desaturates. */
+.client-logo {
+    transform: scale(var(--logo-scale, 1));
+    transition: transform 0.3s ease;
+}
+
+.client-logo:hover {
+    transform: scale(calc(var(--logo-scale, 1) * 1.05));
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

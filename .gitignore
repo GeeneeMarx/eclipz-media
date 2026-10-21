@@ -1,9 +1,9 @@
-@'
 /node_modules
 /public/build
 /public/hot
 /public/storage
 /storage/*.key
+/storage/pail
 /vendor
 /.vscode
 /.idea
@@ -11,4 +11,6 @@
 /.env
 /.env.*
 !/.env.example
-'@ | Set-Content .gitignore
+auth.json
+npm-debug.log
+yarn-error.log

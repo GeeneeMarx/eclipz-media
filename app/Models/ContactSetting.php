@@ -7,6 +7,8 @@ use Illuminate\Database\UniqueConstraintViolationException;
 
 class ContactSetting extends Model
 {
+    public const SOCIAL_FIELDS = ['instagram', 'facebook', 'linkedin', 'tiktok'];
+
     protected $fillable = [
         'phone', 'whatsapp', 'email', 'inquiry_notification_email', 'address',
         'instagram', 'facebook', 'linkedin', 'tiktok',
@@ -59,5 +61,57 @@ class ContactSetting extends Model
         }
 
         return $url;
+    }
+
+    /**
+     * A safe link for one of the social profile fields, or null when it is empty or not a
+     * usable web address. A missing scheme is added (instagram.com/eclipz becomes
+     * https://instagram.com/eclipz). The result must be http or https, must have a real
+     * domain name (so a bare handle such as "@eclipz" is rejected), and must not carry
+     * embedded credentials (https://user@host). An admin-entered value can therefore never
+     * become a script link or a misleading one.
+     */
+    public function socialUrl(string $field): ?string
+    {
+        if (! in_array($field, self::SOCIAL_FIELDS, true)) {
+            return null;
+        }
+
+        $value = trim((string) $this->{$field});
+
+        if ($value === '') {
+            return null;
+        }
+
+        if (! preg_match('#^[a-z][a-z0-9+.-]*://#i', $value)) {
+            $value = 'https://'.ltrim($value, '/');
+        }
+
+        $parts = parse_url($value);
+
+        if ($parts === false) {
+            return null;
+        }
+
+        $scheme = strtolower((string) ($parts['scheme'] ?? ''));
+        $host = strtolower((string) ($parts['host'] ?? ''));
+
+        if (! in_array($scheme, ['http', 'https'], true)) {
+            return null;
+        }
+
+        if (array_key_exists('user', $parts) || array_key_exists('pass', $parts)) {
+            return null;
+        }
+
+        if (! preg_match('/^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/', $host)) {
+            return null;
+        }
+
+        if (filter_var($value, FILTER_VALIDATE_URL) === false) {
+            return null;
+        }
+
+        return $value;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Support\AdminHelp;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
@@ -32,5 +33,8 @@ class AppServiceProvider extends ServiceProvider
 
         // Applies to the admin profile page where the password is changed.
         Password::defaults(fn () => Password::min(12)->mixedCase()->numbers());
+
+        // Help lines, info icons and tooltips across the admin panel (config/admin-help.php).
+        AdminHelp::register();
     }
 }

@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Models\Post;
 use App\Models\Project;
 use Illuminate\Http\Response;
 
 class SitemapController extends Controller
 {
-    /** Public pages plus every published project. Drafts are never listed. */
+    /** Public pages, every published project and every live blog post. Drafts are never listed. */
     public function sitemap(): Response
     {
         $urls = [
@@ -16,8 +17,8 @@ class SitemapController extends Controller
             ['loc' => route('work.index'), 'priority' => '0.9'],
             ['loc' => route('services'), 'priority' => '0.8'],
             ['loc' => route('about'), 'priority' => '0.7'],
-            ['loc' => route('process'), 'priority' => '0.6'],
             ['loc' => route('clients'), 'priority' => '0.6'],
+            ['loc' => route('blog.index'), 'priority' => '0.7'],
             ['loc' => route('contact'), 'priority' => '0.7'],
         ];
 
@@ -30,6 +31,18 @@ class SitemapController extends Controller
                     'loc' => route('work.show', ['project' => $project->slug]),
                     'lastmod' => $project->updated_at?->toAtomString(),
                     'priority' => '0.7',
+                ];
+            });
+
+        Post::query()
+            ->live()
+            ->orderBy('id')
+            ->get(['slug', 'updated_at'])
+            ->each(function (Post $post) use (&$urls) {
+                $urls[] = [
+                    'loc' => route('blog.show', ['post' => $post->slug]),
+                    'lastmod' => $post->updated_at?->toAtomString(),
+                    'priority' => '0.6',
                 ];
             });
 

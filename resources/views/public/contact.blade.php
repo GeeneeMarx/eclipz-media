@@ -1,6 +1,6 @@
-<x-layouts.public title="Contact | Eclipz Media & Marketing Limited">
+<x-layouts.public title="Contact Us | Eclipz Media & Marketing Limited">
     <section class="max-w-5xl mx-auto px-6 lg:px-10 pt-40 pb-28">
-        <h1 class="font-display text-5xl md:text-7xl tracking-wide">Start a Project</h1>
+        <h1 class="font-display text-5xl md:text-7xl tracking-wide">Send an Enquiry</h1>
         <p class="font-body mt-4 text-jet/60 max-w-xl">Tell us a little about what you need and the Eclipz team will review your enquiry.</p>
 
         <form
@@ -105,11 +105,13 @@
             </button>
         </form>
 
-        @if($contact->email || $contact->phone || $contact->whatsapp)
-            <div class="mt-16 pt-8 border-t border-jet/10 font-body text-sm text-jet/60 space-y-1">
-                @if($contact->email)<p>{{ $contact->email }}</p>@endif
-                @if($contact->phone)<p>{{ $contact->phone }}</p>@endif
-                @if($contact->whatsapp)<p>WhatsApp: {{ $contact->whatsapp }}</p>@endif
+        @php
+            $hasChannels = $contact->whatsappUrl() || collect(\App\Models\ContactSetting::SOCIAL_FIELDS)->contains(fn ($field) => $contact->socialUrl($field));
+        @endphp
+        @if(filled($contact->email) || filled($contact->phone) || $hasChannels)
+            <div class="mt-16 pt-8 border-t border-jet/10 font-body text-sm text-jet/60 flex flex-col gap-6">
+                <x-contact-details :contact="$contact" tone="light" />
+                <x-contact-channels :contact="$contact" tone="light" />
             </div>
         @endif
     </section>

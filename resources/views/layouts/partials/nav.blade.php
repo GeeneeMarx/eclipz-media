@@ -16,23 +16,11 @@
     :class="onDark ? 'bg-transparent text-white' : 'bg-white/95 backdrop-blur border-b border-jet/10 text-jet'"
     class="fixed top-0 inset-x-0 z-50 transition-colors duration-300"
 >
-    @php
-        $navLogoPath = public_path('images/eclipz-icon.svg');
-        $hasNavLogo = file_exists($navLogoPath);
-        // The same versioned address as the favicon, so the browser downloads the icon once.
-        $navLogoUrl = asset('images/eclipz-icon.svg').($hasNavLogo ? '?v='.filemtime($navLogoPath) : '');
-    @endphp
     <div class="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-20">
         <a href="{{ route('home') }}" aria-label="Eclipz Media & Marketing - Home" class="inline-flex items-center py-2">
-            @if($hasNavLogo)
-                <img
-                    src="{{ $navLogoUrl }}"
-                    alt="Eclipz"
-                    class="h-7 md:h-9 w-auto"
-                >
-            @else
-                <span class="font-display text-2xl tracking-wide">ECLIPZ</span>
-            @endif
+            {{-- White logo over the dark hero, black logo everywhere else. --}}
+            <x-brand-logo variant="white" x-show="onDark" x-cloak class="h-8 md:h-10 w-auto" alt="" />
+            <x-brand-logo variant="black" x-show="!onDark" class="h-8 md:h-10 w-auto" alt="Eclipz Media & Marketing" />
         </a>
 
         <nav aria-label="Primary" class="hidden md:flex items-center gap-10 font-body text-sm">
@@ -40,8 +28,8 @@
             <a href="{{ route('work.index') }}" class="hover:text-electric-blue transition-colors {{ request()->routeIs('work.*') ? 'text-electric-blue' : '' }}">Work</a>
             <a href="{{ route('services') }}" class="hover:text-electric-blue transition-colors {{ request()->routeIs('services') ? 'text-electric-blue' : '' }}">Services</a>
             <a href="{{ route('about') }}" class="hover:text-electric-blue transition-colors {{ request()->routeIs('about') ? 'text-electric-blue' : '' }}">About</a>
-            <a href="{{ route('process') }}" class="hover:text-electric-blue transition-colors {{ request()->routeIs('process') ? 'text-electric-blue' : '' }}">Process</a>
             <a href="{{ route('clients') }}" class="hover:text-electric-blue transition-colors {{ request()->routeIs('clients') ? 'text-electric-blue' : '' }}">Clients</a>
+            <a href="{{ route('blog.index') }}" class="hover:text-electric-blue transition-colors {{ request()->routeIs('blog.*') ? 'text-electric-blue' : '' }}">Blog</a>
         </nav>
 
         <a
@@ -78,8 +66,8 @@
         <a href="{{ route('work.index') }}" @click="open = false">Work</a>
         <a href="{{ route('services') }}" @click="open = false">Services</a>
         <a href="{{ route('about') }}" @click="open = false">About</a>
-        <a href="{{ route('process') }}" @click="open = false">Process</a>
         <a href="{{ route('clients') }}" @click="open = false">Clients</a>
+        <a href="{{ route('blog.index') }}" @click="open = false">Blog</a>
         <a href="{{ route('contact') }}" @click="open = false" class="font-medium text-electric-blue">Start a Project</a>
     </nav>
 </header>

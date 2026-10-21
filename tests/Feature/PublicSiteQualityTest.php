@@ -119,21 +119,9 @@ class PublicSiteQualityTest extends TestCase
 
         $this->assertNotEmpty($footer);
 
-        foreach (['work.index', 'services', 'about', 'process', 'clients', 'contact'] as $name) {
+        foreach (['work.index', 'services', 'about', 'clients', 'contact'] as $name) {
             $this->assertStringContainsString(route($name), $footer[0], "Footer is missing the {$name} link");
         }
-    }
-
-    public function test_nav_icon_and_favicon_share_one_address(): void
-    {
-        $html = $this->get('/')->assertOk()->getContent();
-
-        preg_match('/<img[^>]+src="([^"]*eclipz-icon\.svg[^"]*)"/', $html, $image);
-        preg_match('/<link[^>]+rel="icon"[^>]+href="([^"]+)"/', $html, $favicon);
-
-        $this->assertNotEmpty($image);
-        $this->assertNotEmpty($favicon);
-        $this->assertSame(html_entity_decode($favicon[1]), html_entity_decode($image[1]));
     }
 
     public function test_confirmation_page_is_not_indexable(): void

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Models\ProcessStep;
 use App\Models\ServiceCategory;
 
 class ServicesController extends Controller
@@ -16,6 +17,7 @@ class ServicesController extends Controller
                 ->orderBy('sort_order')
                 ->get()
                 ->filter(fn ($category) => $category->services->isNotEmpty()),
+            'steps' => ProcessStep::visible()->get(),
         ]);
     }
 }

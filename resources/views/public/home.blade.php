@@ -144,6 +144,70 @@
         </div>
     </x-container>
 
+    {{-- HOW WE WORK: a short overview. The full steps are on the Services page, and both
+         come from the same admin-managed list (Admin > Process Steps). --}}
+    @if($processSteps->isNotEmpty())
+        <section class="bg-jet/[0.03] py-28" data-reveal>
+            <x-container>
+                <div class="flex items-end justify-between mb-14">
+                    <x-section-heading eyebrow="How We Work">From first conversation to finished campaign</x-section-heading>
+                    <a href="{{ route('services') }}#how-we-work" class="hidden md:inline-flex items-center gap-2 font-body text-sm hover:text-electric-blue transition-colors">
+                        See the full process
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                    </a>
+                </div>
+
+                <ol class="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-10">
+                    @foreach($processSteps as $step)
+                        <li class="border-t border-jet/15 pt-5">
+                            <span class="font-display text-3xl text-jet/20" aria-hidden="true">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+                            <p class="font-display text-xl tracking-wide mt-1">{{ $step->title }}</p>
+                        </li>
+                    @endforeach
+                </ol>
+
+                <a href="{{ route('services') }}#how-we-work" class="md:hidden mt-10 inline-flex items-center gap-2 font-body text-sm hover:text-electric-blue transition-colors">
+                    See the full process
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                </a>
+            </x-container>
+        </section>
+    @endif
+
+    {{-- LATEST STORIES: the three newest live blog posts. The section is left out when there are none. --}}
+    @if($latestPosts->isNotEmpty())
+        <section id="latest-stories" class="py-28" data-reveal>
+            <x-container>
+                <div class="flex items-end justify-between mb-14">
+                    <x-section-heading eyebrow="Insights & Updates">Latest from Eclipz</x-section-heading>
+                    <a href="{{ route('blog.index') }}" class="hidden md:inline-flex items-center gap-2 font-body text-sm hover:text-electric-blue transition-colors">
+                        View all stories
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                    </a>
+                </div>
+
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
+                    @foreach($latestPosts as $latestPost)
+                        <x-post-card :post="$latestPost" heading="h3" />
+                    @endforeach
+                </div>
+
+                <a href="{{ route('blog.index') }}" class="md:hidden mt-12 inline-flex items-center gap-2 font-body text-sm hover:text-electric-blue transition-colors">
+                    View all stories
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                </a>
+            </x-container>
+        </section>
+    @endif
+
     {{-- FINAL CTA --}}
     <x-cta-section button-label="Work With Us" :button-href="route('contact')">
         Ready to tell your story?

@@ -12,7 +12,7 @@ class FaviconTest extends TestCase
 
     private const ICON = 'images/eclipz-icon.svg';
 
-    private const PUBLIC_PAGES = ['/', '/work', '/services', '/about', '/process', '/clients', '/contact'];
+    private const PUBLIC_PAGES = ['/', '/work', '/services', '/about', '/clients', '/contact'];
 
     /** Every <link rel="icon"> (or "shortcut icon") tag in a page's HTML. */
     private function iconLinks(string $html): array

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Public\AboutController;
+use App\Http\Controllers\Public\BlogController;
 use App\Http\Controllers\Public\ClientsController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\HomeController;
@@ -22,6 +23,9 @@ Route::get('/services', [ServicesController::class, 'index'])->name('services');
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::get('/process', [ProcessController::class, 'index'])->name('process');
 Route::get('/clients', [ClientsController::class, 'index'])->name('clients');
+
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{post:slug}', [BlogController::class, 'show'])->name('blog.show');
 
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');

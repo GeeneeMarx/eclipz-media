@@ -1,17 +1,22 @@
 @php
     // One place to change how every email looks.
-    // Header band colour: brand Jet Black. Use #FFFFFF instead if the logo is dark.
+    // Header band colour: brand Jet Black, which suits the white logo.
     $headerBackground = '#0A0A0A';
 
-    // The logo is a PNG exported from the approved SVG (email apps cannot show SVG),
-    // embedded in the email itself. It is always drawn small: a fixed height, with the
-    // width following the picture's shape, so square, wide and tall files all stay a
-    // small mark in a slim header.
-    $logoPath = public_path('images/eclipz-logo-email.png');
+    // The logo is the same transparent white PNG the website footer uses
+    // (public/images/eclipz-logo-white.png). Email apps cannot show SVG, so it is a PNG,
+    // embedded in the email itself. It is drawn small: a fixed height, with the width
+    // following the picture's shape, so the header stays a slim band.
+    $logoPath = public_path('images/eclipz-logo-white.png');
+
+    if (! is_file($logoPath)) {
+        $logoPath = public_path('images/eclipz-logo-email.png');
+    }
+
     $logoHeight = 32;     // change this one number to make the logo bigger or smaller
-    $logoMaxWidth = 160;
+    $logoMaxWidth = 180;
     $logoWidth = $logoHeight;
-    $showLogo = isset($message) && file_exists($logoPath);
+    $showLogo = isset($message) && is_file($logoPath);
 
     if ($showLogo) {
         $size = @getimagesize($logoPath);

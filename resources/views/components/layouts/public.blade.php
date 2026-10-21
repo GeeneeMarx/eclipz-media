@@ -1,10 +1,11 @@
-@props(['title' => null, 'metaDescription' => null, 'image' => null, 'noindex' => false])
+@props(['title' => null, 'metaDescription' => null, 'image' => null, 'noindex' => false, 'ogType' => 'website', 'canonical' => null])
 @php
     $seo = \App\Models\SeoSetting::current();
     $pageTitle = $title ?? $seo->default_meta_title ?? 'Eclipz Media & Marketing Limited';
     $pageDescription = $metaDescription ?? $seo->default_meta_description ?? 'Eclipz Media & Marketing Limited - Crafting Timeless Visual Stories. Creative media, digital marketing, and brand strategy from Lagos, Nigeria.';
     $ogImagePath = $image ?? $seo->default_og_image;
     $ogImageUrl = $ogImagePath ? \Illuminate\Support\Facades\Storage::url($ogImagePath) : null;
+    $canonicalUrl = $canonical ?? url()->current();
 
     // Favicon: the same icon-only Eclipz mark the admin panel uses (public/images/eclipz-icon.svg).
     // The ?v= value is the file's last-modified time, so browsers fetch a fresh copy
@@ -32,15 +33,15 @@
     @if($noindex)
         <meta name="robots" content="noindex, nofollow">
     @endif
-    <link rel="canonical" href="{{ url()->current() }}">
+    <link rel="canonical" href="{{ $canonicalUrl }}">
 
     <link rel="icon" type="image/svg+xml" href="{{ $faviconUrl }}">
 
     <meta property="og:site_name" content="Eclipz Media &amp; Marketing">
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="{{ $ogType }}">
     <meta property="og:title" content="{{ $pageTitle }}">
     <meta property="og:description" content="{{ $pageDescription }}">
-    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:url" content="{{ $canonicalUrl }}">
     @if($ogImageUrl)
         <meta property="og:image" content="{{ $ogImageUrl }}">
     @endif
@@ -50,6 +51,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Bebas+Neue&display=swap">
+
+    {{ $head ?? '' }}
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>

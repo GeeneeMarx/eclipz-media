@@ -19,5 +19,25 @@
         @endforelse
     </section>
 
+    {{-- HOW WE WORK: the full steps, from Admin > Process Steps. The homepage shows a short overview. --}}
+    @if($steps->isNotEmpty())
+        <section id="how-we-work" class="bg-jet/[0.03] py-28 scroll-mt-24">
+            <div class="max-w-7xl mx-auto px-6 lg:px-10">
+                <h2 class="font-display text-4xl md:text-5xl tracking-wide">How We Work</h2>
+                <p class="font-body mt-4 text-jet/60 max-w-xl">A clear path from first conversation to finished campaign.</p>
+
+                <ol class="mt-12">
+                    @foreach($steps as $step)
+                        <li class="grid md:grid-cols-12 gap-6 py-8 border-t border-jet/10 @if($loop->last) border-b @endif items-baseline" data-reveal>
+                            <span class="md:col-span-2 font-display text-4xl text-jet/20" aria-hidden="true">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+                            <span class="md:col-span-3 font-display text-2xl tracking-wide">{{ $step->title }}</span>
+                            <span class="md:col-span-7 font-body text-jet/60">{{ $step->description }}</span>
+                        </li>
+                    @endforeach
+                </ol>
+            </div>
+        </section>
+    @endif
+
     <x-cta-section :button-href="route('contact')">Need something specific?</x-cta-section>
 </x-layouts.public>

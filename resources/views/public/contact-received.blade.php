@@ -67,9 +67,7 @@
                     rel="noopener noreferrer"
                     class="inline-flex items-center gap-3 bg-jet text-white px-7 py-3.5 font-body hover:bg-electric-blue transition-colors"
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h8M8 14h5m-9 6l1.6-4.2A8 8 0 1112 20a8 8 0 01-3.2-.7L4 20z" />
-                    </svg>
+                    <x-contact-icon name="whatsapp" class="w-4 h-4" />
                     Follow up on WhatsApp
                 </a>
             @endif

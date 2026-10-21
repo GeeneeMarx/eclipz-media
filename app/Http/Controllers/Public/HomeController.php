@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Models\ClientPartner;
 use App\Models\CompanySetting;
+use App\Models\Post;
+use App\Models\ProcessStep;
 use App\Models\Project;
 use App\Models\ServiceCategory;
 use App\Models\Testimonial;
@@ -35,6 +37,14 @@ class HomeController extends Controller
             'testimonials' => Testimonial::query()
                 ->published()
                 ->orderBy('sort_order')
+                ->limit(3)
+                ->get(),
+            'processSteps' => ProcessStep::visible()->get(),
+            'latestPosts' => Post::query()
+                ->live()
+                ->with('author')
+                ->orderByDesc('published_at')
+                ->orderByDesc('id')
                 ->limit(3)
                 ->get(),
         ]);

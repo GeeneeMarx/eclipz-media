@@ -4,8 +4,9 @@
     $pageTitle = $title ?? $seo->default_meta_title ?? 'Eclipz Media & Marketing Limited';
     $pageDescription = $metaDescription ?? $seo->default_meta_description ?? 'Eclipz Media & Marketing Limited - Crafting Timeless Visual Stories. Creative media, digital marketing, and brand strategy from Lagos, Nigeria.';
     $ogImagePath = $image ?? $seo->default_og_image;
-    $ogImageUrl = $ogImagePath ? \Illuminate\Support\Facades\Storage::url($ogImagePath) : null;
-    $canonicalUrl = $canonical ?? url()->current();
+    // Canonical links and share tags always use the public domain (config/seo.php).
+    $ogImageUrl = $ogImagePath ? \App\Support\Seo::assetUrl(\Illuminate\Support\Facades\Storage::url($ogImagePath)) : null;
+    $canonicalUrl = \App\Support\Seo::canonicalize($canonical ?? url()->current());
 
     // Favicon: the same icon-only Eclipz mark the admin panel uses (public/images/eclipz-icon.svg).
     // The ?v= value is the file's last-modified time, so browsers fetch a fresh copy

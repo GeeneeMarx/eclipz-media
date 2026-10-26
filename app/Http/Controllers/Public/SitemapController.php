@@ -5,73 +5,63 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\Project;
+use App\Support\Seo;
 use Illuminate\Http\Response;
 
 class SitemapController extends Controller
 {
-    /** Public pages, every published project and every live blog post. Drafts are never listed. */
+    /**
+     * Every public, indexable page: the fixed pages, each published project and each live
+     * blog post. Drafts, scheduled posts, redirects (such as /process), the thank-you page,
+     * the admin and filtered or paged listings are never included.
+     */
     public function sitemap(): Response
     {
-        $urls = [
-            ['loc' => route('home'), 'priority' => '1.0'],
-            ['loc' => route('work.index'), 'priority' => '0.9'],
-            ['loc' => route('services'), 'priority' => '0.8'],
-            ['loc' => route('about'), 'priority' => '0.7'],
-            ['loc' => route('clients'), 'priority' => '0.6'],
-            ['loc' => route('blog.index'), 'priority' => '0.7'],
-            ['loc' => route('contact'), 'priority' => '0.7'],
-        ];
+        $entries = [];
 
-        Project::query()
-            ->where('is_published', true)
-            ->orderBy('id')
-            ->get(['slug', 'updated_at'])
-            ->each(function (Project $project) use (&$urls) {
-                $urls[] = [
-                    'loc' => route('work.show', ['project' => $project->slug]),
-                    'lastmod' => $project->updated_at?->toAtomString(),
-                    'priority' => '0.7',
-                ];
-            });
-
-        Post::query()
-            ->live()
-            ->orderBy('id')
-            ->get(['slug', 'updated_at'])
-            ->each(function (Post $post) use (&$urls) {
-                $urls[] = [
-                    'loc' => route('blog.show', ['post' => $post->slug]),
-                    'lastmod' => $post->updated_at?->toAtomString(),
-                    'priority' => '0.6',
-                ];
-            });
-
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n".'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n";
-
-        foreach ($urls as $url) {
-            $xml .= '  <url><loc>'.e($url['loc']).'</loc>';
-
-            if (! empty($url['lastmod'])) {
-                $xml .= '<lastmod>'.e($url['lastmod']).'</lastmod>';
-            }
-
-            $xml .= '<priority>'.$url['priority'].'</priority></url>'."\n";
+        foreach (['home', 'work.index', 'services', 'about', 'clients', 'blog.index', 'contact'] as $name) {
+            $entries[] = ['loc' => Seo::route($name)];
         }
 
-        $xml .= '</urlset>'."\n";
+        $projects = Project::query()
+            ->where('is_published', true)
+            ->orderBy('id')
+            ->get(['slug', 'updated_at']);
 
-        return response($xml, 200, ['Content-Type' => 'application/xml; charset=UTF-8']);
+        foreach ($projects as $project) {
+            $entries[] = [
+                'loc' => Seo::route('work.show', ['project' => $project->slug]),
+                'lastmod' => Seo::lastmod($project->updated_at),
+            ];
+        }
+
+        $posts = Post::query()
+            ->live()
+            ->orderBy('id')
+            ->get(['slug', 'updated_at']);
+
+        foreach ($posts as $post) {
+            $entries[] = [
+                'loc' => Seo::route('blog.show', ['post' => $post->slug]),
+                'lastmod' => Seo::lastmod($post->updated_at),
+            ];
+        }
+
+        return response(Seo::sitemapXml($entries), 200, ['Content-Type' => 'application/xml; charset=UTF-8']);
     }
 
+    /**
+     * Served by Laravel, so a static public/robots.txt must not exist: the web server would
+     * hand out that file instead of this response.
+     */
     public function robots(): Response
     {
         $lines = [
             'User-agent: *',
             'Disallow: /admin',
-            'Disallow: /livewire',
             'Disallow: /contact/received',
             '',
-            'Sitemap: '.route('sitemap'),
+            'Sitemap: '.Seo::route('sitemap'),
         ];
 
         return response(implode("\n", $lines)."\n", 200, ['Content-Type' => 'text/plain; charset=UTF-8']);
